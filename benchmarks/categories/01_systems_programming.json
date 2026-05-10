@@ -1,0 +1,124 @@
+{
+  "category": "systems_programming",
+  "title": "Systems Programming",
+  "description": "Low-level programming challenges: memory management, concurrency, file I/O, process management",
+  "problems": [
+    {
+      "id": "sys_001",
+      "title": "Implement a Thread Pool",
+      "difficulty": "Medium",
+      "description": "Create a thread pool that manages a fixed number of worker threads and executes submitted tasks. Support graceful shutdown and task queuing.",
+      "requirements": [
+        "Fixed number of worker threads specified at creation",
+        "submit(task) method to queue callable tasks",
+        "Tasks execute in FIFO order",
+        "shutdown() waits for all tasks to complete",
+        "shutdown_now() cancels pending tasks",
+        "Thread-safe task queue"
+      ],
+      "test_cases": [
+        {
+          "input": "pool = ThreadPool(4); results = [pool.submit(lambda: i*2) for i in range(10)]; pool.shutdown()",
+          "expected": "All 10 tasks complete, results contain [0,2,4,6,8,10,12,14,16,18]"
+        },
+        {
+          "input": "pool = ThreadPool(2); pool.submit(slow_task); pool.shutdown_now()",
+          "expected": "Running tasks complete, pending tasks cancelled"
+        }
+      ],
+      "evaluation_criteria": {
+        "correctness": "Tasks execute correctly with proper results",
+        "thread_safety": "No race conditions under concurrent access",
+        "resource_cleanup": "All threads properly terminated on shutdown"
+      },
+      "time_limit_minutes": 30
+    },
+    {
+      "id": "sys_002",
+      "title": "Memory-Mapped File Reader",
+      "difficulty": "Hard",
+      "description": "Implement a memory-mapped file reader that efficiently processes large files without loading them entirely into memory.",
+      "requirements": [
+        "Use mmap for memory-mapped access",
+        "Support reading specific byte ranges",
+        "Implement line iterator for text files",
+        "Handle files larger than available RAM",
+        "Proper resource cleanup with context manager"
+      ],
+      "test_cases": [
+        {
+          "input": "reader = MMapReader('large.txt'); lines = list(reader.lines()[:100])",
+          "expected": "First 100 lines returned without loading full file"
+        },
+        {
+          "input": "reader = MMapReader('data.bin'); chunk = reader.read_range(1000, 2000)",
+          "expected": "Returns bytes 1000-2000"
+        }
+      ],
+      "evaluation_criteria": {
+        "memory_efficiency": "Memory usage stays constant regardless of file size",
+        "correctness": "Correct data returned for all access patterns",
+        "cleanup": "Resources released on exit"
+      },
+      "time_limit_minutes": 25
+    },
+    {
+      "id": "sys_003",
+      "title": "Process Supervisor",
+      "difficulty": "Hard",
+      "description": "Create a process supervisor that manages child processes, handles crashes with automatic restart, and provides health monitoring.",
+      "requirements": [
+        "Start and monitor multiple child processes",
+        "Automatic restart on crash with configurable backoff",
+        "Health check via heartbeat or HTTP endpoint",
+        "Graceful shutdown with SIGTERM handling",
+        "Logging of process lifecycle events"
+      ],
+      "test_cases": [
+        {
+          "input": "supervisor.add('worker', ['python', 'worker.py'], restart=True); supervisor.start()",
+          "expected": "Worker starts and restarts on crash"
+        },
+        {
+          "input": "supervisor.stop_all(timeout=5)",
+          "expected": "All processes receive SIGTERM, force kill after timeout"
+        }
+      ],
+      "evaluation_criteria": {
+        "reliability": "Processes restart correctly after crashes",
+        "signal_handling": "Clean shutdown on SIGTERM/SIGINT",
+        "monitoring": "Accurate health status reporting"
+      },
+      "time_limit_minutes": 40
+    },
+    {
+      "id": "sys_004",
+      "title": "Lock-Free Queue",
+      "difficulty": "Hard",
+      "description": "Implement a lock-free concurrent queue using atomic operations (CAS). Must be safe for multiple producers and consumers.",
+      "requirements": [
+        "No locks or mutexes",
+        "Use compare-and-swap (CAS) operations",
+        "Support multiple producers and consumers",
+        "Linearizable operations",
+        "Memory-safe (no use-after-free)"
+      ],
+      "test_cases": [
+        {
+          "input": "q = LockFreeQueue(); [Thread(target=q.enqueue, args=(i,)) for i in range(1000)]",
+          "expected": "All 1000 items enqueued without data loss"
+        },
+        {
+          "input": "Concurrent enqueue/dequeue from 8 threads",
+          "expected": "No race conditions, all operations complete"
+        }
+      ],
+      "evaluation_criteria": {
+        "correctness": "No lost or duplicated items",
+        "lock_free": "No blocking operations",
+        "performance": "Better throughput than mutex-based queue under contention"
+      },
+      "time_limit_minutes": 45
+    }
+  ]
+}

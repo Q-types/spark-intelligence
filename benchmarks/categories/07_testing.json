@@ -1,0 +1,109 @@
+{
+  "category": "testing",
+  "title": "Testing & Quality Assurance",
+  "description": "Testing challenges: unit tests, integration tests, mocking, test design, coverage",
+  "problems": [
+    {
+      "id": "tst_001",
+      "title": "Design Test Suite for Calculator",
+      "difficulty": "Easy",
+      "description": "Write a comprehensive test suite for a calculator class covering all operations and edge cases.",
+      "code_to_test": "class Calculator:\n    def add(self, a, b):\n        return a + b\n    \n    def subtract(self, a, b):\n        return a - b\n    \n    def multiply(self, a, b):\n        return a * b\n    \n    def divide(self, a, b):\n        if b == 0:\n            raise ValueError('Division by zero')\n        return a / b\n    \n    def power(self, base, exp):\n        return base ** exp",
+      "requirements": [
+        "Test all operations with positive numbers",
+        "Test with negative numbers",
+        "Test with zero",
+        "Test floating point precision",
+        "Test error conditions",
+        "Use parameterized tests for efficiency"
+      ],
+      "evaluation_criteria": {
+        "coverage": "100% line coverage",
+        "edge_cases": "All boundary conditions tested",
+        "organization": "Tests are well-organized and named"
+      },
+      "time_limit_minutes": 20
+    },
+    {
+      "id": "tst_002",
+      "title": "Mock External Dependencies",
+      "difficulty": "Medium",
+      "description": "Write tests for a service that depends on external APIs, databases, and time-sensitive operations.",
+      "code_to_test": "class OrderService:\n    def __init__(self, db, payment_api, email_service):\n        self.db = db\n        self.payment_api = payment_api\n        self.email_service = email_service\n    \n    def create_order(self, user_id, items):\n        # Calculate total\n        total = sum(item['price'] * item['quantity'] for item in items)\n        \n        # Charge payment\n        payment_result = self.payment_api.charge(user_id, total)\n        if not payment_result.success:\n            raise PaymentError(payment_result.error)\n        \n        # Save order\n        order = self.db.orders.create({\n            'user_id': user_id,\n            'items': items,\n            'total': total,\n            'payment_id': payment_result.transaction_id,\n            'created_at': datetime.now()\n        })\n        \n        # Send confirmation\n        self.email_service.send_order_confirmation(user_id, order)\n        \n        return order",
+      "requirements": [
+        "Mock database operations",
+        "Mock payment API with success/failure scenarios",
+        "Mock email service",
+        "Freeze time for deterministic tests",
+        "Test error handling paths"
+      ],
+      "evaluation_criteria": {
+        "isolation": "Tests don't require real dependencies",
+        "scenarios": "Success and failure paths tested",
+        "assertions": "Verify correct calls to dependencies"
+      },
+      "time_limit_minutes": 30
+    },
+    {
+      "id": "tst_003",
+      "title": "Property-Based Testing",
+      "difficulty": "Medium",
+      "description": "Write property-based tests using Hypothesis to find edge cases in a sorting/filtering library.",
+      "code_to_test": "def custom_sort(items, key=None, reverse=False):\n    '''Sort items with custom key function.'''\n    return sorted(items, key=key, reverse=reverse)\n\ndef filter_range(items, min_val=None, max_val=None):\n    '''Filter items within range.'''\n    result = items\n    if min_val is not None:\n        result = [x for x in result if x >= min_val]\n    if max_val is not None:\n        result = [x for x in result if x <= max_val]\n    return result\n\ndef unique(items):\n    '''Return unique items preserving order.'''\n    seen = set()\n    result = []\n    for item in items:\n        if item not in seen:\n            seen.add(item)\n            result.append(item)\n    return result",
+      "requirements": [
+        "Use Hypothesis to generate test data",
+        "Test sort properties: idempotent, length preserved, ordered",
+        "Test filter properties: subset, bounds respected",
+        "Test unique properties: no duplicates, subset of input",
+        "Find any edge cases the implementation misses"
+      ],
+      "evaluation_criteria": {
+        "properties": "Correct properties identified",
+        "generators": "Appropriate data generators used",
+        "bugs_found": "Any implementation bugs discovered"
+      },
+      "time_limit_minutes": 30
+    },
+    {
+      "id": "tst_004",
+      "title": "Integration Test with Test Containers",
+      "difficulty": "Hard",
+      "description": "Write integration tests for a service using real database and cache via test containers.",
+      "code_to_test": "class UserRepository:\n    def __init__(self, db_url, cache_url):\n        self.db = connect(db_url)\n        self.cache = Redis(cache_url)\n    \n    def get_user(self, user_id):\n        # Try cache first\n        cached = self.cache.get(f'user:{user_id}')\n        if cached:\n            return json.loads(cached)\n        \n        # Query database\n        user = self.db.query('SELECT * FROM users WHERE id = ?', user_id)\n        if user:\n            self.cache.setex(f'user:{user_id}', 300, json.dumps(user))\n        return user\n    \n    def create_user(self, data):\n        user = self.db.execute(\n            'INSERT INTO users (name, email) VALUES (?, ?)',\n            data['name'], data['email']\n        )\n        return user\n    \n    def invalidate_cache(self, user_id):\n        self.cache.delete(f'user:{user_id}')",
+      "requirements": [
+        "Use testcontainers for PostgreSQL and Redis",
+        "Test cache hit and miss scenarios",
+        "Test cache invalidation",
+        "Test database operations",
+        "Clean up between tests"
+      ],
+      "evaluation_criteria": {
+        "isolation": "Tests are isolated from each other",
+        "real_deps": "Uses real database and cache",
+        "cleanup": "Proper setup/teardown"
+      },
+      "time_limit_minutes": 40
+    },
+    {
+      "id": "tst_005",
+      "title": "Test Coverage Analysis",
+      "difficulty": "Easy",
+      "description": "Analyze code coverage report and write tests to achieve 100% branch coverage.",
+      "code_to_test": "def process_data(data, options=None):\n    options = options or {}\n    \n    if not data:\n        return {'error': 'No data provided'}\n    \n    result = []\n    for item in data:\n        if options.get('skip_none') and item is None:\n            continue\n        \n        if options.get('transform'):\n            item = options['transform'](item)\n        \n        if options.get('filter'):\n            if not options['filter'](item):\n                continue\n        \n        result.append(item)\n    \n    if options.get('sort'):\n        result.sort(key=options.get('sort_key'))\n    \n    if options.get('limit'):\n        result = result[:options['limit']]\n    \n    return {'data': result, 'count': len(result)}",
+      "coverage_report": "Lines covered: 60%\nBranches covered: 45%\nMissing: skip_none path, filter path, sort with key, limit",
+      "requirements": [
+        "Write tests to cover all branches",
+        "Test each option individually",
+        "Test option combinations",
+        "Achieve 100% branch coverage",
+        "Document which test covers which branch"
+      ],
+      "evaluation_criteria": {
+        "coverage": "100% branch coverage achieved",
+        "minimal": "No redundant tests",
+        "documentation": "Clear coverage mapping"
+      },
+      "time_limit_minutes": 25
+    }
+  ]
+}

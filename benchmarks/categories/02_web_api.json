@@ -1,0 +1,127 @@
+{
+  "category": "web_api",
+  "title": "Web & API Development",
+  "description": "Web application and API challenges: REST design, authentication, middleware, request handling",
+  "problems": [
+    {
+      "id": "web_001",
+      "title": "JWT Authentication Middleware",
+      "difficulty": "Medium",
+      "description": "Implement JWT authentication middleware that validates tokens, extracts claims, and handles token refresh.",
+      "requirements": [
+        "Validate JWT signature using RS256 or HS256",
+        "Extract and validate standard claims (exp, iat, sub)",
+        "Support token refresh before expiration",
+        "Handle invalid/expired tokens with proper HTTP status",
+        "Protect routes with @require_auth decorator"
+      ],
+      "test_cases": [
+        {
+          "input": "POST /login with valid credentials",
+          "expected": "Returns access_token and refresh_token"
+        },
+        {
+          "input": "GET /protected with expired token",
+          "expected": "401 Unauthorized with 'token_expired' error"
+        },
+        {
+          "input": "POST /refresh with valid refresh_token",
+          "expected": "New access_token returned"
+        }
+      ],
+      "evaluation_criteria": {
+        "security": "Tokens properly validated, secrets not exposed",
+        "standards": "Follows JWT RFC 7519",
+        "error_handling": "Clear error messages without leaking info"
+      },
+      "time_limit_minutes": 30
+    },
+    {
+      "id": "web_002",
+      "title": "Rate Limiter with Sliding Window",
+      "difficulty": "Medium",
+      "description": "Implement a distributed rate limiter using sliding window algorithm. Support per-user and per-endpoint limits.",
+      "requirements": [
+        "Sliding window counter algorithm",
+        "Configurable limits per endpoint",
+        "Per-user rate tracking",
+        "Redis backend for distributed state",
+        "Return rate limit headers (X-RateLimit-*)"
+      ],
+      "test_cases": [
+        {
+          "input": "100 requests in 1 second with limit 50/minute",
+          "expected": "First 50 succeed, rest return 429"
+        },
+        {
+          "input": "Check headers after request",
+          "expected": "X-RateLimit-Remaining, X-RateLimit-Reset present"
+        }
+      ],
+      "evaluation_criteria": {
+        "accuracy": "Rate limits enforced within 1% tolerance",
+        "performance": "< 1ms overhead per request",
+        "distributed": "Consistent across multiple instances"
+      },
+      "time_limit_minutes": 35
+    },
+    {
+      "id": "web_003",
+      "title": "GraphQL Resolver with DataLoader",
+      "difficulty": "Hard",
+      "description": "Implement GraphQL resolvers with DataLoader pattern to solve N+1 query problem. Include pagination and filtering.",
+      "requirements": [
+        "DataLoader for batching database queries",
+        "Cursor-based pagination",
+        "Field-level filtering",
+        "Nested resolver optimization",
+        "Query complexity analysis"
+      ],
+      "test_cases": [
+        {
+          "input": "query { users { posts { comments } } }",
+          "expected": "Maximum 3 database queries regardless of result count"
+        },
+        {
+          "input": "query with complexity > limit",
+          "expected": "Rejected with complexity error"
+        }
+      ],
+      "evaluation_criteria": {
+        "efficiency": "N+1 problem eliminated",
+        "correctness": "Correct data returned with pagination",
+        "security": "Query complexity limits enforced"
+      },
+      "time_limit_minutes": 40
+    },
+    {
+      "id": "web_004",
+      "title": "Webhook Delivery System",
+      "difficulty": "Medium",
+      "description": "Build a reliable webhook delivery system with retry logic, signature verification, and delivery tracking.",
+      "requirements": [
+        "HMAC signature for payload verification",
+        "Exponential backoff retry (max 5 attempts)",
+        "Delivery status tracking per webhook",
+        "Timeout handling (30s max)",
+        "Dead letter queue for failed deliveries"
+      ],
+      "test_cases": [
+        {
+          "input": "Send webhook to temporarily unavailable endpoint",
+          "expected": "Retries with backoff, eventually succeeds or moves to DLQ"
+        },
+        {
+          "input": "Verify webhook signature on receiver",
+          "expected": "Signature validates with shared secret"
+        }
+      ],
+      "evaluation_criteria": {
+        "reliability": "At-least-once delivery guarantee",
+        "security": "Signatures prevent tampering",
+        "observability": "Full delivery audit trail"
+      },
+      "time_limit_minutes": 35
+    }
+  ]
+}

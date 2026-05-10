@@ -1,0 +1,152 @@
+{
+  "category": "algorithms",
+  "title": "Algorithms & Data Structures",
+  "description": "Classic algorithm challenges: sorting, searching, graph algorithms, dynamic programming",
+  "problems": [
+    {
+      "id": "alg_001",
+      "title": "Trie with Autocomplete",
+      "difficulty": "Medium",
+      "description": "Implement a Trie data structure with prefix search and autocomplete functionality returning top-k suggestions.",
+      "requirements": [
+        "insert(word, frequency) - add word with usage frequency",
+        "search(word) - exact match lookup",
+        "starts_with(prefix) - check if prefix exists",
+        "autocomplete(prefix, k) - return top k words by frequency",
+        "delete(word) - remove word from trie"
+      ],
+      "test_cases": [
+        {
+          "input": "trie.insert('apple', 10); trie.insert('app', 5); trie.autocomplete('ap', 2)",
+          "expected": "['apple', 'app'] (sorted by frequency)"
+        },
+        {
+          "input": "trie.delete('apple'); trie.search('apple')",
+          "expected": "False"
+        }
+      ],
+      "evaluation_criteria": {
+        "correctness": "All operations return expected results",
+        "complexity": "O(m) for insert/search where m is word length",
+        "efficiency": "Autocomplete uses heap for top-k"
+      },
+      "time_limit_minutes": 25
+    },
+    {
+      "id": "alg_002",
+      "title": "Dijkstra's Shortest Path",
+      "difficulty": "Medium",
+      "description": "Implement Dijkstra's algorithm for finding shortest paths in a weighted graph with path reconstruction.",
+      "requirements": [
+        "Handle directed and undirected graphs",
+        "Return both distance and path",
+        "Handle disconnected nodes (return infinity)",
+        "Optimize with priority queue",
+        "Support negative weight detection (error)"
+      ],
+      "test_cases": [
+        {
+          "input": "Graph: A->B(1), A->C(4), B->C(2); shortest_path(A, C)",
+          "expected": "{'distance': 3, 'path': ['A', 'B', 'C']}"
+        },
+        {
+          "input": "Graph with negative edge",
+          "expected": "Raises NegativeWeightError"
+        }
+      ],
+      "evaluation_criteria": {
+        "correctness": "Finds actual shortest paths",
+        "complexity": "O((V+E) log V) with proper heap",
+        "edge_cases": "Handles disconnected graphs"
+      },
+      "time_limit_minutes": 30
+    },
+    {
+      "id": "alg_003",
+      "title": "LCS with Diff Generation",
+      "difficulty": "Hard",
+      "description": "Implement Longest Common Subsequence algorithm and use it to generate a unified diff between two texts.",
+      "requirements": [
+        "Dynamic programming LCS implementation",
+        "Backtrack to find actual subsequence",
+        "Generate unified diff format output",
+        "Handle large files efficiently (memory optimization)",
+        "Support line-by-line and character-by-character modes"
+      ],
+      "test_cases": [
+        {
+          "input": "lcs('ABCBDAB', 'BDCAB')",
+          "expected": "'BCAB' (length 4)"
+        },
+        {
+          "input": "diff(old_text, new_text)",
+          "expected": "Unified diff with +/- markers"
+        }
+      ],
+      "evaluation_criteria": {
+        "correctness": "Finds actual LCS",
+        "diff_quality": "Minimal, readable diffs",
+        "memory": "O(min(m,n)) space optimization"
+      },
+      "time_limit_minutes": 35
+    },
+    {
+      "id": "alg_004",
+      "title": "Bloom Filter",
+      "difficulty": "Medium",
+      "description": "Implement a Bloom filter for probabilistic set membership testing with configurable false positive rate.",
+      "requirements": [
+        "Configurable false positive rate",
+        "Optimal hash function count calculation",
+        "add(item) and might_contain(item) operations",
+        "Memory-efficient bit array",
+        "Support for serialization"
+      ],
+      "test_cases": [
+        {
+          "input": "bf = BloomFilter(n=1000, fp_rate=0.01); bf.add('test'); bf.might_contain('test')",
+          "expected": "True"
+        },
+        {
+          "input": "Test 10000 items not added",
+          "expected": "False positives < 1%"
+        }
+      ],
+      "evaluation_criteria": {
+        "accuracy": "False positive rate within configured bounds",
+        "efficiency": "O(k) operations where k is hash count",
+        "memory": "Optimal bits per element"
+      },
+      "time_limit_minutes": 25
+    },
+    {
+      "id": "alg_005",
+      "title": "Interval Scheduling",
+      "difficulty": "Medium",
+      "description": "Implement interval scheduling algorithms: maximum non-overlapping intervals and minimum intervals to cover a range.",
+      "requirements": [
+        "max_non_overlapping(intervals) - greedy selection",
+        "min_cover(intervals, range) - minimum intervals to cover range",
+        "Handle edge cases (empty, single interval)",
+        "Return both count and selected intervals",
+        "O(n log n) complexity"
+      ],
+      "test_cases": [
+        {
+          "input": "max_non_overlapping([(0,2), (1,3), (2,4), (3,5)])",
+          "expected": "[(0,2), (2,4)] or [(0,2), (3,5)]"
+        },
+        {
+          "input": "min_cover([(0,3), (2,5), (4,7)], (0,7))",
+          "expected": "[(0,3), (2,5), (4,7)] - all needed"
+        }
+      ],
+      "evaluation_criteria": {
+        "correctness": "Optimal solutions found",
+        "complexity": "O(n log n) time",
+        "edge_cases": "Handles all boundary conditions"
+      },
+      "time_limit_minutes": 25
+    }
+  ]
+}

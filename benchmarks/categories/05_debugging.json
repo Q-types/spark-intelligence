@@ -1,0 +1,137 @@
+{
+  "category": "debugging",
+  "title": "Debugging & Troubleshooting",
+  "description": "Debug complex issues: race conditions, memory leaks, performance problems, logic errors",
+  "problems": [
+    {
+      "id": "dbg_001",
+      "title": "Find the Race Condition",
+      "difficulty": "Hard",
+      "description": "Debug a concurrent counter implementation that occasionally produces incorrect results due to a race condition.",
+      "buggy_code": "class Counter:\n    def __init__(self):\n        self.value = 0\n    \n    def increment(self):\n        current = self.value\n        self.value = current + 1\n    \n    def get(self):\n        return self.value",
+      "requirements": [
+        "Identify the race condition",
+        "Fix without using locks if possible (atomic operations)",
+        "If locks needed, use minimal locking scope",
+        "Maintain O(1) increment operation",
+        "Add test proving fix works under contention"
+      ],
+      "test_cases": [
+        {
+          "input": "100 threads each incrementing 1000 times",
+          "expected": "Final value is exactly 100000"
+        }
+      ],
+      "evaluation_criteria": {
+        "correctness": "Race condition eliminated",
+        "performance": "Minimal synchronization overhead",
+        "explanation": "Clear description of the bug"
+      },
+      "time_limit_minutes": 20
+    },
+    {
+      "id": "dbg_002",
+      "title": "Memory Leak Investigation",
+      "difficulty": "Medium",
+      "description": "Find and fix a memory leak in a caching system that grows unboundedly over time.",
+      "buggy_code": "class Cache:\n    def __init__(self):\n        self.cache = {}\n        self.callbacks = []\n    \n    def get(self, key, loader):\n        if key not in self.cache:\n            value = loader()\n            self.cache[key] = value\n            self.callbacks.append(lambda: print(f'Loaded {key}'))\n        return self.cache[key]\n    \n    def clear(self, key):\n        if key in self.cache:\n            del self.cache[key]",
+      "requirements": [
+        "Identify all memory leak sources",
+        "Fix the leaks while maintaining functionality",
+        "Add cache size limits",
+        "Ensure callbacks don't retain references",
+        "Add memory usage monitoring"
+      ],
+      "test_cases": [
+        {
+          "input": "Load and clear 10000 keys",
+          "expected": "Memory usage returns to baseline"
+        }
+      ],
+      "evaluation_criteria": {
+        "leak_fixed": "No unbounded growth",
+        "functionality": "Cache still works correctly",
+        "monitoring": "Memory usage is observable"
+      },
+      "time_limit_minutes": 25
+    },
+    {
+      "id": "dbg_003",
+      "title": "Performance Bottleneck",
+      "difficulty": "Medium",
+      "description": "Optimize a slow function that processes user data. Current runtime is O(n^3), needs to be O(n) or O(n log n).",
+      "slow_code": "def find_duplicates(users):\n    duplicates = []\n    for i, user1 in enumerate(users):\n        for j, user2 in enumerate(users):\n            if i != j and user1['email'] == user2['email']:\n                if user1 not in duplicates:\n                    duplicates.append(user1)\n    return duplicates",
+      "requirements": [
+        "Reduce time complexity to O(n) or O(n log n)",
+        "Maintain correct duplicate detection",
+        "Handle case-insensitive email matching",
+        "Return same result format",
+        "Add performance benchmarks"
+      ],
+      "test_cases": [
+        {
+          "input": "10000 users with 100 duplicate emails",
+          "expected": "Complete in < 100ms (was > 10s)"
+        }
+      ],
+      "evaluation_criteria": {
+        "complexity": "O(n) or O(n log n)",
+        "correctness": "Same results as original",
+        "benchmarks": "Measurable improvement"
+      },
+      "time_limit_minutes": 20
+    },
+    {
+      "id": "dbg_004",
+      "title": "Deadlock Detection",
+      "difficulty": "Hard",
+      "description": "Find and fix a deadlock in a banking transfer system that freezes under concurrent transfers.",
+      "buggy_code": "class Account:\n    def __init__(self, id, balance):\n        self.id = id\n        self.balance = balance\n        self.lock = threading.Lock()\n\ndef transfer(from_acc, to_acc, amount):\n    with from_acc.lock:\n        with to_acc.lock:\n            if from_acc.balance >= amount:\n                from_acc.balance -= amount\n                to_acc.balance += amount\n                return True\n    return False",
+      "requirements": [
+        "Identify the deadlock scenario",
+        "Fix using lock ordering or other technique",
+        "Maintain atomicity of transfers",
+        "No performance degradation",
+        "Add deadlock detection/prevention"
+      ],
+      "test_cases": [
+        {
+          "input": "Concurrent: transfer(A,B,100) and transfer(B,A,50)",
+          "expected": "Both complete without deadlock"
+        }
+      ],
+      "evaluation_criteria": {
+        "deadlock_free": "No deadlocks under any scenario",
+        "atomicity": "Transfers are atomic",
+        "explanation": "Clear fix description"
+      },
+      "time_limit_minutes": 25
+    },
+    {
+      "id": "dbg_005",
+      "title": "Off-by-One Errors",
+      "difficulty": "Easy",
+      "description": "Find and fix multiple off-by-one errors in array/string manipulation code.",
+      "buggy_code": "def process_ranges(data, ranges):\n    results = []\n    for start, end in ranges:\n        # Extract slice and reverse\n        slice_data = data[start:end-1]\n        reversed_slice = []\n        for i in range(len(slice_data), 0, -1):\n            reversed_slice.append(slice_data[i])\n        results.append(reversed_slice)\n    return results",
+      "requirements": [
+        "Identify all off-by-one errors",
+        "Fix slice boundaries",
+        "Fix loop indices",
+        "Add boundary validation",
+        "Add comprehensive test cases"
+      ],
+      "test_cases": [
+        {
+          "input": "data=[1,2,3,4,5], ranges=[(0,3), (2,5)]",
+          "expected": "[[3,2,1], [5,4,3]]"
+        }
+      ],
+      "evaluation_criteria": {
+        "correctness": "All indices correct",
+        "validation": "Handles edge cases",
+        "tests": "Comprehensive test coverage"
+      },
+      "time_limit_minutes": 15
+    }
+  ]
+}

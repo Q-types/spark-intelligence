@@ -1,0 +1,165 @@
+{
+  "category": "security",
+  "title": "Security & Defensive Coding",
+  "description": "Security challenges: input validation, encryption, vulnerability prevention, secure coding patterns",
+  "problems": [
+    {
+      "id": "sec_001",
+      "title": "SQL Injection Prevention",
+      "difficulty": "Easy",
+      "description": "Refactor vulnerable code to prevent SQL injection attacks. Implement parameterized queries and input validation.",
+      "requirements": [
+        "Replace string concatenation with parameterized queries",
+        "Validate and sanitize all user inputs",
+        "Implement allowlist for dynamic column names",
+        "Add SQL injection detection logging",
+        "Preserve original functionality"
+      ],
+      "vulnerable_code": "def get_user(username):\n    query = f\"SELECT * FROM users WHERE name = '{username}'\"\n    return db.execute(query)",
+      "test_cases": [
+        {
+          "input": "username = \"admin' OR '1'='1\"",
+          "expected": "Query returns no results (injection blocked)"
+        },
+        {
+          "input": "username = \"valid_user\"",
+          "expected": "Returns correct user record"
+        }
+      ],
+      "evaluation_criteria": {
+        "security": "All injection vectors blocked",
+        "functionality": "Legitimate queries work correctly",
+        "logging": "Suspicious inputs logged"
+      },
+      "time_limit_minutes": 15
+    },
+    {
+      "id": "sec_002",
+      "title": "Password Hashing and Verification",
+      "difficulty": "Medium",
+      "description": "Implement secure password storage using modern hashing algorithms with salting and key stretching.",
+      "requirements": [
+        "Use Argon2id or bcrypt for hashing",
+        "Automatic salt generation",
+        "Configurable work factor",
+        "Timing-safe comparison",
+        "Password strength validation"
+      ],
+      "test_cases": [
+        {
+          "input": "hash_password('mypassword123')",
+          "expected": "Returns hash with embedded salt, different each call"
+        },
+        {
+          "input": "verify_password('wrong', hash)",
+          "expected": "Returns False in constant time"
+        },
+        {
+          "input": "validate_strength('weak')",
+          "expected": "Rejects with specific weakness reasons"
+        }
+      ],
+      "evaluation_criteria": {
+        "algorithm": "Uses recommended algorithm with proper parameters",
+        "timing": "Verification is timing-safe",
+        "strength": "Rejects weak passwords with guidance"
+      },
+      "time_limit_minutes": 25
+    },
+    {
+      "id": "sec_003",
+      "title": "XSS Prevention Filter",
+      "difficulty": "Medium",
+      "description": "Implement an XSS filter that sanitizes HTML content while preserving safe formatting tags.",
+      "requirements": [
+        "Allowlist of safe tags (p, b, i, a, ul, li)",
+        "Attribute filtering (only href for anchors)",
+        "URL scheme validation (http, https only)",
+        "Handle nested and malformed HTML",
+        "Preserve text content"
+      ],
+      "test_cases": [
+        {
+          "input": "<script>alert('xss')</script><p>Safe</p>",
+          "expected": "<p>Safe</p>"
+        },
+        {
+          "input": "<a href='javascript:alert(1)'>Click</a>",
+          "expected": "<a>Click</a> (href removed)"
+        },
+        {
+          "input": "<p onclick='evil()'>Text</p>",
+          "expected": "<p>Text</p> (onclick removed)"
+        }
+      ],
+      "evaluation_criteria": {
+        "security": "All XSS vectors neutralized",
+        "preservation": "Safe content unchanged",
+        "robustness": "Handles malformed HTML"
+      },
+      "time_limit_minutes": 30
+    },
+    {
+      "id": "sec_004",
+      "title": "Secrets Manager",
+      "difficulty": "Hard",
+      "description": "Build a secrets manager that encrypts secrets at rest, supports key rotation, and provides secure access control.",
+      "requirements": [
+        "AES-256-GCM encryption for secrets",
+        "Master key derivation with PBKDF2",
+        "Key rotation without re-encrypting all secrets",
+        "Access audit logging",
+        "Secure memory handling (zero on free)"
+      ],
+      "test_cases": [
+        {
+          "input": "secrets.store('api_key', 'sk-12345')",
+          "expected": "Secret encrypted and stored"
+        },
+        {
+          "input": "secrets.rotate_master_key(new_password)",
+          "expected": "New secrets use new key, old secrets still readable"
+        },
+        {
+          "input": "Memory dump after secrets.get()",
+          "expected": "Secret not visible in memory"
+        }
+      ],
+      "evaluation_criteria": {
+        "encryption": "AES-256-GCM with proper IV handling",
+        "key_management": "Secure key derivation and rotation",
+        "memory": "Secrets cleared from memory after use"
+      },
+      "time_limit_minutes": 45
+    },
+    {
+      "id": "sec_005",
+      "title": "CSRF Protection Middleware",
+      "difficulty": "Easy",
+      "description": "Implement CSRF protection using double-submit cookie pattern with token validation.",
+      "requirements": [
+        "Generate cryptographically random tokens",
+        "Double-submit cookie pattern",
+        "Token validation on state-changing requests",
+        "SameSite cookie attributes",
+        "Proper error responses"
+      ],
+      "test_cases": [
+        {
+          "input": "POST /transfer without CSRF token",
+          "expected": "403 Forbidden"
+        },
+        {
+          "input": "POST /transfer with valid token in header and cookie",
+          "expected": "Request processed"
+        }
+      ],
+      "evaluation_criteria": {
+        "security": "Tokens are unpredictable",
+        "usability": "Works with AJAX and form submissions",
+        "standards": "Follows OWASP recommendations"
+      },
+      "time_limit_minutes": 20
+    }
+  ]
+}

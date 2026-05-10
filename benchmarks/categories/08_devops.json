@@ -1,0 +1,112 @@
+{
+  "category": "devops",
+  "title": "DevOps & Infrastructure",
+  "description": "Infrastructure challenges: containerization, CI/CD, monitoring, configuration management",
+  "problems": [
+    {
+      "id": "ops_001",
+      "title": "Dockerfile Optimization",
+      "difficulty": "Easy",
+      "description": "Optimize a Dockerfile to reduce image size and build time using multi-stage builds and layer caching.",
+      "original_dockerfile": "FROM python:3.11\nWORKDIR /app\nCOPY . .\nRUN pip install -r requirements.txt\nRUN python -m pytest\nRUN pip install gunicorn\nCMD [\"gunicorn\", \"app:app\"]",
+      "requirements": [
+        "Use multi-stage build",
+        "Optimize layer caching (dependencies before code)",
+        "Remove test dependencies from production image",
+        "Use slim or alpine base image",
+        "Add health check",
+        "Set proper user (non-root)"
+      ],
+      "evaluation_criteria": {
+        "size": "Image size reduced by 50%+",
+        "caching": "Dependency layer cached",
+        "security": "Runs as non-root user"
+      },
+      "time_limit_minutes": 20
+    },
+    {
+      "id": "ops_002",
+      "title": "CI/CD Pipeline Design",
+      "difficulty": "Medium",
+      "description": "Design a GitHub Actions workflow for a Python web application with testing, security scanning, and deployment.",
+      "requirements": [
+        "Run tests on PR and push to main",
+        "Parallel test matrix (Python 3.10, 3.11, 3.12)",
+        "Security scanning (dependencies, SAST)",
+        "Build and push Docker image",
+        "Deploy to staging on merge to main",
+        "Manual approval for production deploy",
+        "Rollback capability"
+      ],
+      "evaluation_criteria": {
+        "completeness": "All stages implemented",
+        "security": "Scanning integrated",
+        "efficiency": "Parallel jobs where possible"
+      },
+      "time_limit_minutes": 35
+    },
+    {
+      "id": "ops_003",
+      "title": "Kubernetes Deployment Manifest",
+      "difficulty": "Medium",
+      "description": "Create Kubernetes manifests for a web application with proper resource limits, health checks, and autoscaling.",
+      "requirements": [
+        "Deployment with 3 replicas",
+        "Resource requests and limits",
+        "Liveness and readiness probes",
+        "Horizontal Pod Autoscaler (CPU-based)",
+        "ConfigMap for environment variables",
+        "Secret for sensitive data",
+        "Service and Ingress"
+      ],
+      "evaluation_criteria": {
+        "completeness": "All required resources defined",
+        "best_practices": "Proper resource limits, probes",
+        "security": "Secrets properly managed"
+      },
+      "time_limit_minutes": 30
+    },
+    {
+      "id": "ops_004",
+      "title": "Monitoring and Alerting Setup",
+      "difficulty": "Hard",
+      "description": "Design a monitoring stack with Prometheus metrics, Grafana dashboards, and alerting rules.",
+      "requirements": [
+        "Custom application metrics (request latency, error rate)",
+        "Prometheus scrape configuration",
+        "Grafana dashboard with key metrics",
+        "Alert rules: high error rate, high latency, pod restarts",
+        "PagerDuty/Slack integration for alerts",
+        "SLO/SLI definitions"
+      ],
+      "evaluation_criteria": {
+        "metrics": "Meaningful metrics exposed",
+        "dashboards": "Clear, actionable visualizations",
+        "alerts": "Appropriate thresholds, no alert fatigue"
+      },
+      "time_limit_minutes": 45
+    },
+    {
+      "id": "ops_005",
+      "title": "Infrastructure as Code",
+      "difficulty": "Hard",
+      "description": "Write Terraform configuration to provision a scalable web application infrastructure on AWS.",
+      "requirements": [
+        "VPC with public/private subnets",
+        "ECS Fargate cluster",
+        "Application Load Balancer",
+        "RDS PostgreSQL (Multi-AZ)",
+        "ElastiCache Redis",
+        "S3 bucket for static assets",
+        "CloudWatch log groups",
+        "Use modules for reusability"
+      ],
+      "evaluation_criteria": {
+        "completeness": "All resources provisioned",
+        "security": "Private subnets, security groups",
+        "modularity": "Reusable module structure"
+      },
+      "time_limit_minutes": 50
+    }
+  ]
+}

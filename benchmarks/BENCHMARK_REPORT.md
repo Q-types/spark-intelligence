@@ -22,7 +22,9 @@ This benchmark evaluates Claude Code performance across **6 MCP configurations**
 
 ## Benchmark Problems
 
-### Data Science (5 problems)
+### Original Categories (10 problems)
+
+#### Data Science (5 problems)
 | ID | Title | Difficulty |
 |----|-------|------------|
 | ds_001 | Pandas Data Manipulation | Easy |
@@ -31,7 +33,7 @@ This benchmark evaluates Claude Code performance across **6 MCP configurations**
 | ds_004 | ML Pipeline with Cross-Validation | Hard |
 | ds_005 | Unsupervised Anomaly Detection | Hard |
 
-### Programming (5 problems)
+#### Programming (5 problems)
 | ID | Title | Difficulty |
 |----|-------|------------|
 | prog_001 | Implement LRU Cache | Easy |
@@ -39,6 +41,22 @@ This benchmark evaluates Claude Code performance across **6 MCP configurations**
 | prog_003 | Code Refactoring Challenge | Medium |
 | prog_004 | Design a Rate Limiter | Hard |
 | prog_005 | Debug Async Race Condition | Hard |
+
+### Expanded Categories (37 problems)
+
+| # | Category | Problems | Easy | Medium | Hard |
+|---|----------|----------|------|--------|------|
+| 1 | Systems Programming | 4 | 0 | 1 | 3 |
+| 2 | Web & API Development | 4 | 0 | 3 | 1 |
+| 3 | Security & Defensive Coding | 5 | 2 | 2 | 1 |
+| 4 | Algorithms & Data Structures | 5 | 0 | 4 | 1 |
+| 5 | Debugging & Troubleshooting | 5 | 1 | 2 | 2 |
+| 6 | Code Review & Refactoring | 4 | 1 | 2 | 1 |
+| 7 | Testing & Quality Assurance | 5 | 2 | 2 | 1 |
+| 8 | DevOps & Infrastructure | 5 | 1 | 2 | 2 |
+| | **Total** | **37** | **7** | **18** | **12** |
+
+See `benchmarks/categories/README.md` for full problem details.
 
 ---
 

@@ -1,0 +1,87 @@
+{
+  "category": "code_review",
+  "title": "Code Review & Refactoring",
+  "description": "Review and improve code: identify issues, suggest refactors, apply design patterns",
+  "problems": [
+    {
+      "id": "rev_001",
+      "title": "Extract Method Refactoring",
+      "difficulty": "Easy",
+      "description": "Refactor a long method into smaller, well-named methods following single responsibility principle.",
+      "original_code": "def process_order(order):\n    # Validate\n    if not order.get('items'):\n        raise ValueError('No items')\n    if not order.get('customer_id'):\n        raise ValueError('No customer')\n    for item in order['items']:\n        if item['quantity'] <= 0:\n            raise ValueError('Invalid quantity')\n    \n    # Calculate totals\n    subtotal = 0\n    for item in order['items']:\n        subtotal += item['price'] * item['quantity']\n    tax = subtotal * 0.08\n    shipping = 5.99 if subtotal < 50 else 0\n    total = subtotal + tax + shipping\n    \n    # Save to database\n    order['subtotal'] = subtotal\n    order['tax'] = tax\n    order['shipping'] = shipping\n    order['total'] = total\n    order['status'] = 'pending'\n    db.orders.insert(order)\n    \n    # Send notifications\n    email.send(order['customer_id'], f'Order {order[\"id\"]} confirmed')\n    if total > 100:\n        email.send('sales@company.com', f'Large order: {order[\"id\"]}')\n    \n    return order",
+      "requirements": [
+        "Extract validation into separate method",
+        "Extract calculation into separate method",
+        "Extract persistence into separate method",
+        "Extract notification into separate method",
+        "Main method orchestrates the steps"
+      ],
+      "evaluation_criteria": {
+        "srp": "Each method has single responsibility",
+        "readability": "Methods are well-named and clear",
+        "testability": "Each method can be tested independently"
+      },
+      "time_limit_minutes": 20
+    },
+    {
+      "id": "rev_002",
+      "title": "Apply Strategy Pattern",
+      "difficulty": "Medium",
+      "description": "Refactor conditional logic into Strategy pattern for payment processing.",
+      "original_code": "def process_payment(method, amount, details):\n    if method == 'credit_card':\n        card = details['card_number']\n        # Validate card\n        if not validate_luhn(card):\n            raise ValueError('Invalid card')\n        # Charge card\n        result = stripe.charge(card, amount)\n        return {'success': True, 'transaction_id': result.id}\n    \n    elif method == 'paypal':\n        email = details['paypal_email']\n        # Create PayPal payment\n        result = paypal.create_payment(email, amount)\n        return {'success': True, 'redirect_url': result.approval_url}\n    \n    elif method == 'crypto':\n        wallet = details['wallet_address']\n        # Generate crypto invoice\n        invoice = crypto.create_invoice(wallet, amount)\n        return {'success': True, 'invoice_url': invoice.url}\n    \n    else:\n        raise ValueError(f'Unknown payment method: {method}')",
+      "requirements": [
+        "Create PaymentStrategy interface/protocol",
+        "Implement CreditCardStrategy, PayPalStrategy, CryptoStrategy",
+        "Use strategy registry for method lookup",
+        "Add new payment method without modifying existing code",
+        "Maintain same external API"
+      ],
+      "evaluation_criteria": {
+        "ocp": "Open for extension, closed for modification",
+        "interface": "Clear strategy interface",
+        "extensibility": "Easy to add new payment methods"
+      },
+      "time_limit_minutes": 30
+    },
+    {
+      "id": "rev_003",
+      "title": "Code Review: Find Issues",
+      "difficulty": "Medium",
+      "description": "Review the following code and identify all issues: bugs, security problems, performance issues, and style violations.",
+      "code_to_review": "import os\nimport pickle\n\ndef load_user_data(username):\n    path = f'/data/users/{username}.pkl'\n    if os.path.exists(path):\n        with open(path) as f:\n            data = pickle.load(f)\n        return data\n    return None\n\ndef save_user_data(username, data):\n    path = f'/data/users/{username}.pkl'\n    with open(path, 'w') as f:\n        pickle.dump(data, f)\n\ndef authenticate(username, password):\n    user = load_user_data(username)\n    if user and user['password'] == password:\n        return True\n    return False\n\ndef get_user_file(username, filename):\n    path = f'/data/users/{username}/{filename}'\n    with open(path) as f:\n        return f.read()",
+      "requirements": [
+        "Identify all security vulnerabilities",
+        "Identify all bugs",
+        "Identify performance issues",
+        "Suggest fixes for each issue",
+        "Rate severity of each issue"
+      ],
+      "evaluation_criteria": {
+        "coverage": "All issues identified",
+        "accuracy": "Issues correctly categorized",
+        "fixes": "Appropriate fixes suggested"
+      },
+      "time_limit_minutes": 25
+    },
+    {
+      "id": "rev_004",
+      "title": "Replace Inheritance with Composition",
+      "difficulty": "Hard",
+      "description": "Refactor a deep inheritance hierarchy into composition-based design.",
+      "original_code": "class Animal:\n    def __init__(self, name):\n        self.name = name\n\nclass Mammal(Animal):\n    def give_birth(self):\n        return 'Live birth'\n\nclass Bird(Animal):\n    def lay_eggs(self):\n        return 'Lays eggs'\n\nclass FlyingMammal(Mammal):\n    def fly(self):\n        return 'Flying'\n\nclass SwimmingBird(Bird):\n    def swim(self):\n        return 'Swimming'\n\nclass Bat(FlyingMammal):\n    pass\n\nclass Penguin(SwimmingBird):\n    pass\n\n# Problem: What about a flying bird? Swimming mammal?",
+      "requirements": [
+        "Replace inheritance with composition",
+        "Create capability interfaces (Flyable, Swimmable, etc.)",
+        "Use mixins or dependency injection",
+        "Support any combination of capabilities",
+        "Maintain clean API for clients"
+      ],
+      "evaluation_criteria": {
+        "flexibility": "Any capability combination supported",
+        "cohesion": "Clear separation of concerns",
+        "api": "Clean, intuitive interface"
+      },
+      "time_limit_minutes": 35
+    }
+  ]
+}
