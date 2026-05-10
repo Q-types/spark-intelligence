@@ -1,0 +1,157 @@
+{
+  "category": "programming",
+  "version": "1.0",
+  "problems": [
+    {
+      "id": "prog_001",
+      "title": "Implement LRU Cache",
+      "difficulty": "easy",
+      "description": "Implement an LRU (Least Recently Used) cache with the following requirements:\n1. Initialize with a capacity\n2. get(key) - Return value if exists, else -1. Mark as recently used.\n3. put(key, value) - Insert/update. Evict LRU item if at capacity.\n4. O(1) time complexity for both operations\n5. Include type hints and docstrings",
+      "starter_code": "from typing import Optional\n\nclass LRUCache:\n    def __init__(self, capacity: int):\n        # Your implementation\n        pass\n    \n    def get(self, key: int) -> int:\n        # Your implementation\n        pass\n    \n    def put(self, key: int, value: int) -> None:\n        # Your implementation\n        pass",
+      "test_cases": [
+        {
+          "operations": ["LRUCache", "put", "put", "get", "put", "get", "put", "get", "get", "get"],
+          "args": [[2], [1, 1], [2, 2], [1], [3, 3], [2], [4, 4], [1], [3], [4]],
+          "expected": [null, null, null, 1, null, -1, null, -1, 3, 4]
+        },
+        {
+          "operations": ["LRUCache", "put", "get", "put", "get", "get"],
+          "args": [[1], [2, 1], [2], [3, 2], [2], [3]],
+          "expected": [null, null, 1, null, -1, 2]
+        }
+      ],
+      "evaluation_criteria": {
+        "correctness_weight": 0.4,
+        "time_complexity_weight": 0.3,
+        "code_quality_weight": 0.3
+      },
+      "hints": ["Consider using OrderedDict or doubly-linked list + hashmap"],
+      "tags": ["data-structures", "cache", "hashmap", "linked-list"]
+    },
+    {
+      "id": "prog_002",
+      "title": "REST API Client with Retry Logic",
+      "difficulty": "medium",
+      "description": "Implement a robust REST API client class that:\n1. Supports GET, POST, PUT, DELETE methods\n2. Implements exponential backoff retry (max 3 retries)\n3. Handles rate limiting (429 status) with Retry-After header\n4. Includes request/response logging\n5. Supports timeout configuration\n6. Returns typed response objects\n7. Raises custom exceptions for different error types",
+      "starter_code": "import requests\nfrom typing import Any, Optional, Dict\nfrom dataclasses import dataclass\n\n@dataclass\nclass APIResponse:\n    status_code: int\n    data: Any\n    headers: Dict[str, str]\n    elapsed_ms: float\n\nclass APIError(Exception):\n    pass\n\nclass RateLimitError(APIError):\n    pass\n\nclass APIClient:\n    def __init__(self, base_url: str, timeout: float = 30.0):\n        # Your implementation\n        pass\n    \n    def get(self, endpoint: str, params: Optional[Dict] = None) -> APIResponse:\n        # Your implementation\n        pass\n    \n    def post(self, endpoint: str, data: Any = None) -> APIResponse:\n        # Your implementation\n        pass",
+      "test_cases": [
+        {
+          "scenario": "successful_get",
+          "mock_responses": [{"status": 200, "body": {"id": 1}}],
+          "expected_retries": 0
+        },
+        {
+          "scenario": "retry_on_503",
+          "mock_responses": [{"status": 503}, {"status": 503}, {"status": 200, "body": {"ok": true}}],
+          "expected_retries": 2
+        },
+        {
+          "scenario": "rate_limit_with_retry_after",
+          "mock_responses": [{"status": 429, "headers": {"Retry-After": "2"}}, {"status": 200}],
+          "expected_wait_time": 2
+        }
+      ],
+      "evaluation_criteria": {
+        "correctness_weight": 0.3,
+        "error_handling_weight": 0.3,
+        "code_quality_weight": 0.2,
+        "robustness_weight": 0.2
+      },
+      "tags": ["api", "http", "retry", "error-handling"]
+    },
+    {
+      "id": "prog_003",
+      "title": "Code Refactoring Challenge",
+      "difficulty": "medium",
+      "description": "Refactor the following code to improve quality:\n1. Add proper type hints\n2. Fix the bug (hint: edge case with empty input)\n3. Improve naming and readability\n4. Add error handling\n5. Optimize performance (current is O(n^2), achieve O(n))\n6. Add docstrings\n7. Make it more Pythonic",
+      "starter_code": "def process(d):\n    r = []\n    for i in range(len(d)):\n        f = True\n        for j in range(len(r)):\n            if d[i] == r[j]:\n                f = False\n                break\n        if f:\n            r.append(d[i])\n    s = 0\n    for x in r:\n        s = s + x\n    return s / len(r)",
+      "expected_behavior": "Remove duplicates from list, return mean of unique values",
+      "test_cases": [
+        {"input": [1, 2, 2, 3, 3, 3], "expected": 2.0},
+        {"input": [5], "expected": 5.0},
+        {"input": [], "expected": "should raise ValueError or return None"},
+        {"input": [1.5, 2.5, 1.5], "expected": 2.0}
+      ],
+      "evaluation_criteria": {
+        "bug_fix_weight": 0.2,
+        "type_hints_weight": 0.15,
+        "performance_weight": 0.2,
+        "readability_weight": 0.2,
+        "error_handling_weight": 0.15,
+        "pythonic_weight": 0.1
+      },
+      "tags": ["refactoring", "code-quality", "optimization"]
+    },
+    {
+      "id": "prog_004",
+      "title": "Design a Rate Limiter",
+      "difficulty": "hard",
+      "description": "Design and implement a distributed-ready rate limiter:\n1. Support multiple algorithms: Token Bucket, Sliding Window\n2. Configurable: requests per second/minute/hour\n3. Support multiple keys (e.g., per-user, per-IP)\n4. Thread-safe implementation\n5. Include a decorator for easy function rate limiting\n6. Provide async support\n7. Include metrics: total requests, allowed, denied, current rate",
+      "starter_code": "from abc import ABC, abstractmethod\nfrom typing import Optional, Callable\nimport threading\nimport time\n\nclass RateLimiter(ABC):\n    @abstractmethod\n    def allow(self, key: str = 'default') -> bool:\n        pass\n    \n    @abstractmethod\n    def get_metrics(self, key: str = 'default') -> dict:\n        pass\n\nclass TokenBucketLimiter(RateLimiter):\n    # Your implementation\n    pass\n\nclass SlidingWindowLimiter(RateLimiter):\n    # Your implementation\n    pass\n\ndef rate_limit(limiter: RateLimiter, key_func: Optional[Callable] = None):\n    # Decorator implementation\n    pass",
+      "test_cases": [
+        {
+          "algorithm": "token_bucket",
+          "config": {"rate": 10, "capacity": 10},
+          "scenario": "burst_then_steady",
+          "requests": 15,
+          "expected_allowed": 10,
+          "wait_1_second_then": 10
+        },
+        {
+          "algorithm": "sliding_window",
+          "config": {"requests_per_minute": 60},
+          "scenario": "distributed_requests",
+          "requests_over_2_seconds": 3,
+          "expected_all_allowed": true
+        }
+      ],
+      "evaluation_criteria": {
+        "correctness_weight": 0.25,
+        "algorithm_implementation_weight": 0.25,
+        "thread_safety_weight": 0.2,
+        "api_design_weight": 0.15,
+        "code_quality_weight": 0.15
+      },
+      "tags": ["system-design", "rate-limiting", "concurrency", "threading"]
+    },
+    {
+      "id": "prog_005",
+      "title": "Debug Async Race Condition",
+      "difficulty": "hard",
+      "description": "The following async code has race conditions and bugs. Find and fix all issues:\n1. Identify the race condition(s)\n2. Fix the concurrent counter bug\n3. Handle task cancellation properly\n4. Fix the deadlock potential\n5. Add proper error propagation\n6. Ensure all resources are cleaned up",
+      "starter_code": "import asyncio\nfrom typing import List, Dict\n\nclass AsyncProcessor:\n    def __init__(self):\n        self.results: Dict[str, int] = {}\n        self.counter = 0\n        self.lock = asyncio.Lock()\n    \n    async def process_item(self, item_id: str, value: int) -> int:\n        # Bug: counter increment is not atomic\n        self.counter += 1\n        \n        # Simulate async work\n        await asyncio.sleep(0.1)\n        \n        # Bug: potential race condition on results dict\n        self.results[item_id] = value * 2\n        \n        return self.results[item_id]\n    \n    async def process_batch(self, items: List[tuple]) -> Dict[str, int]:\n        # Bug: no error handling for failed tasks\n        tasks = [self.process_item(id, val) for id, val in items]\n        await asyncio.gather(*tasks)\n        return self.results\n    \n    async def process_with_lock(self, item_id: str, value: int) -> int:\n        # Bug: potential deadlock - nested lock acquisition\n        async with self.lock:\n            result = await self.process_item(item_id, value)\n            async with self.lock:  # Deadlock!\n                self.results[f'{item_id}_verified'] = result\n        return result",
+      "bugs_to_fix": [
+        "Non-atomic counter increment",
+        "Race condition on shared dict",
+        "Missing error handling in gather",
+        "Deadlock from nested lock acquisition",
+        "No task cancellation handling",
+        "Resource cleanup on exception"
+      ],
+      "test_cases": [
+        {
+          "scenario": "concurrent_counter",
+          "concurrent_tasks": 100,
+          "expected_final_counter": 100
+        },
+        {
+          "scenario": "error_in_batch",
+          "items_with_error": true,
+          "expected_behavior": "partial results returned, error logged"
+        },
+        {
+          "scenario": "cancellation",
+          "cancel_after_ms": 50,
+          "expected_behavior": "graceful shutdown, no hanging tasks"
+        }
+      ],
+      "evaluation_criteria": {
+        "bugs_identified_weight": 0.3,
+        "fixes_correct_weight": 0.3,
+        "async_patterns_weight": 0.2,
+        "code_quality_weight": 0.2
+      },
+      "tags": ["async", "concurrency", "debugging", "race-condition"]
+    }
+  ]
+}

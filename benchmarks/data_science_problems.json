@@ -1,0 +1,171 @@
+{
+  "category": "data_science",
+  "version": "1.0",
+  "problems": [
+    {
+      "id": "ds_001",
+      "title": "Pandas Data Manipulation",
+      "difficulty": "easy",
+      "description": "Given a CSV file with sales data (columns: date, product_id, quantity, price, region), write a Python function that:\n1. Loads the data\n2. Filters to sales from 'North' region in 2024\n3. Groups by product_id and calculates total revenue (quantity * price)\n4. Returns the top 5 products by revenue as a DataFrame",
+      "input_spec": {
+        "type": "csv",
+        "columns": ["date", "product_id", "quantity", "price", "region"],
+        "sample_rows": 1000
+      },
+      "expected_output": {
+        "type": "dataframe",
+        "columns": ["product_id", "total_revenue"],
+        "rows": 5,
+        "sorted_by": "total_revenue",
+        "ascending": false
+      },
+      "test_cases": [
+        {
+          "input_file": "sales_test_1.csv",
+          "expected_top_product": "PROD_042",
+          "expected_top_revenue": 125000.50
+        }
+      ],
+      "evaluation_criteria": {
+        "correctness_weight": 0.5,
+        "code_quality_weight": 0.3,
+        "efficiency_weight": 0.2
+      },
+      "tags": ["pandas", "aggregation", "filtering"]
+    },
+    {
+      "id": "ds_002",
+      "title": "Statistical Hypothesis Testing",
+      "difficulty": "medium",
+      "description": "You have two datasets representing click-through rates (CTR) for version A and version B of a website. Write a function that:\n1. Performs a two-sample t-test to determine if there's a significant difference\n2. Calculates the 95% confidence interval for the difference in means\n3. Computes Cohen's d effect size\n4. Returns a dictionary with: t_statistic, p_value, ci_lower, ci_upper, effect_size, is_significant (at alpha=0.05)",
+      "input_spec": {
+        "type": "two_arrays",
+        "array_a": "float array of CTR values for version A",
+        "array_b": "float array of CTR values for version B",
+        "sample_size": "100-500 each"
+      },
+      "expected_output": {
+        "type": "dict",
+        "keys": ["t_statistic", "p_value", "ci_lower", "ci_upper", "effect_size", "is_significant"]
+      },
+      "test_cases": [
+        {
+          "array_a_mean": 0.052,
+          "array_a_std": 0.015,
+          "array_b_mean": 0.058,
+          "array_b_std": 0.018,
+          "n": 200,
+          "expected_significant": true
+        },
+        {
+          "array_a_mean": 0.052,
+          "array_a_std": 0.015,
+          "array_b_mean": 0.053,
+          "array_b_std": 0.016,
+          "n": 50,
+          "expected_significant": false
+        }
+      ],
+      "evaluation_criteria": {
+        "correctness_weight": 0.6,
+        "code_quality_weight": 0.2,
+        "statistical_validity_weight": 0.2
+      },
+      "tags": ["statistics", "hypothesis-testing", "scipy"]
+    },
+    {
+      "id": "ds_003",
+      "title": "Time Series Decomposition",
+      "difficulty": "medium",
+      "description": "Given monthly sales data spanning 3+ years, write a function that:\n1. Performs seasonal decomposition (additive model)\n2. Identifies the trend direction (increasing/decreasing/stable)\n3. Calculates seasonal indices for each month\n4. Detects any anomalies (points > 2 std from trend+seasonal)\n5. Returns decomposition components and analysis summary",
+      "input_spec": {
+        "type": "time_series",
+        "frequency": "monthly",
+        "min_periods": 36,
+        "columns": ["date", "sales"]
+      },
+      "expected_output": {
+        "type": "dict",
+        "keys": ["trend", "seasonal", "residual", "trend_direction", "seasonal_indices", "anomaly_dates"]
+      },
+      "test_cases": [
+        {
+          "description": "Clear upward trend with winter peaks",
+          "trend_direction": "increasing",
+          "peak_month": 12,
+          "expected_anomalies": 2
+        }
+      ],
+      "evaluation_criteria": {
+        "correctness_weight": 0.4,
+        "methodology_weight": 0.3,
+        "interpretation_weight": 0.3
+      },
+      "tags": ["time-series", "statsmodels", "decomposition"]
+    },
+    {
+      "id": "ds_004",
+      "title": "ML Pipeline with Cross-Validation",
+      "difficulty": "hard",
+      "description": "Build a complete ML pipeline for a classification task:\n1. Load dataset with mixed feature types (numeric, categorical)\n2. Implement preprocessing: imputation, scaling, one-hot encoding\n3. Compare 3 models: LogisticRegression, RandomForest, GradientBoosting\n4. Use 5-fold stratified cross-validation\n5. Perform hyperparameter tuning with GridSearchCV\n6. Return best model, CV scores, feature importances, and classification report",
+      "input_spec": {
+        "type": "dataframe",
+        "target_column": "churn",
+        "feature_types": {
+          "numeric": ["age", "tenure", "monthly_charges", "total_charges"],
+          "categorical": ["gender", "contract_type", "payment_method"]
+        },
+        "class_balance": "imbalanced (70/30)"
+      },
+      "expected_output": {
+        "type": "dict",
+        "keys": ["best_model_name", "best_params", "cv_scores", "mean_cv_score", "feature_importances", "classification_report"]
+      },
+      "test_cases": [
+        {
+          "min_accuracy": 0.75,
+          "min_f1": 0.65,
+          "required_preprocessing": ["imputation", "scaling", "encoding"]
+        }
+      ],
+      "evaluation_criteria": {
+        "correctness_weight": 0.3,
+        "methodology_weight": 0.3,
+        "code_quality_weight": 0.2,
+        "model_performance_weight": 0.2
+      },
+      "tags": ["sklearn", "pipeline", "cross-validation", "hyperparameter-tuning"]
+    },
+    {
+      "id": "ds_005",
+      "title": "Unsupervised Anomaly Detection",
+      "difficulty": "hard",
+      "description": "Implement an anomaly detection system for multi-dimensional sensor data:\n1. Load sensor readings (10+ features, 10000+ rows)\n2. Apply dimensionality reduction (PCA) retaining 95% variance\n3. Implement Isolation Forest for anomaly detection\n4. Implement Local Outlier Factor as comparison\n5. Create ensemble scoring (average of normalized scores)\n6. Return anomaly indices, scores, and visualization-ready data",
+      "input_spec": {
+        "type": "dataframe",
+        "features": 12,
+        "rows": 10000,
+        "anomaly_rate": "~2%"
+      },
+      "expected_output": {
+        "type": "dict",
+        "keys": ["anomaly_indices", "anomaly_scores", "pca_components", "if_scores", "lof_scores", "ensemble_scores", "explained_variance"]
+      },
+      "test_cases": [
+        {
+          "true_anomaly_rate": 0.02,
+          "min_precision": 0.70,
+          "min_recall": 0.60,
+          "max_false_positive_rate": 0.05
+        }
+      ],
+      "evaluation_criteria": {
+        "correctness_weight": 0.3,
+        "methodology_weight": 0.3,
+        "detection_performance_weight": 0.3,
+        "code_quality_weight": 0.1
+      },
+      "tags": ["anomaly-detection", "unsupervised", "pca", "isolation-forest", "lof"]
+    }
+  ]
+}

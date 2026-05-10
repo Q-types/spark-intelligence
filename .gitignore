@@ -114,8 +114,7 @@ visuals/out/*.mp4
 package.json
 package-lock.json
 
-# Benchmark artifacts
-benchmarks/
+# Benchmark artifacts (keep problems and harness, ignore outputs)
 benchmarks/out/
 benchmarks/logs/
 
