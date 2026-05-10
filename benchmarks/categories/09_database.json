@@ -1,0 +1,307 @@
+{
+  "category": "database",
+  "title": "Database Engineering",
+  "description": "Database challenges: schema design, query optimization, transactions, indexing, migrations, and advanced SQL features for SQLite and PostgreSQL",
+  "problems": [
+    {
+      "id": "db_001",
+      "title": "Schema Design and Migrations",
+      "difficulty": "Medium",
+      "description": "Design a normalized schema for an e-commerce system and implement safe migrations with rollback capability.",
+      "requirements": [
+        "Create normalized schema (3NF) for users, products, orders, order_items",
+        "Implement migration system with version tracking",
+        "Support forward and rollback migrations",
+        "Add appropriate indexes for common queries",
+        "Handle foreign key constraints properly",
+        "Include audit columns (created_at, updated_at)"
+      ],
+      "test_cases": [
+        {
+          "input": "migrate_up() then migrate_down()",
+          "expected": "Schema created then cleanly removed"
+        },
+        {
+          "input": "Insert order with invalid product_id",
+          "expected": "Foreign key constraint violation"
+        }
+      ],
+      "evaluation_criteria": {
+        "normalization": "Schema is properly normalized",
+        "migrations": "Up/down migrations work correctly",
+        "indexes": "Appropriate indexes for query patterns"
+      },
+      "time_limit_minutes": 30
+    },
+    {
+      "id": "db_002",
+      "title": "Query Optimization with EXPLAIN",
+      "difficulty": "Hard",
+      "description": "Analyze and optimize slow queries using EXPLAIN ANALYZE. Identify missing indexes and rewrite inefficient queries.",
+      "requirements": [
+        "Analyze query execution plans",
+        "Identify sequential scans that should be index scans",
+        "Rewrite subqueries as JOINs where beneficial",
+        "Use covering indexes for frequently accessed columns",
+        "Optimize ORDER BY with proper index ordering",
+        "Handle large result sets with pagination"
+      ],
+      "test_cases": [
+        {
+          "input": "Slow query with nested subquery",
+          "expected": "Optimized to use JOIN, 10x+ improvement"
+        },
+        {
+          "input": "Query with LIKE '%pattern%'",
+          "expected": "Suggest trigram index or full-text search"
+        }
+      ],
+      "evaluation_criteria": {
+        "analysis": "Correctly interprets EXPLAIN output",
+        "optimization": "Achieves measurable performance improvement",
+        "indexes": "Recommends appropriate index types"
+      },
+      "time_limit_minutes": 35
+    },
+    {
+      "id": "db_003",
+      "title": "Transaction Isolation and Deadlock Handling",
+      "difficulty": "Hard",
+      "description": "Implement transaction management with proper isolation levels and deadlock detection/recovery.",
+      "requirements": [
+        "Demonstrate READ COMMITTED vs SERIALIZABLE behavior",
+        "Implement optimistic locking with version columns",
+        "Detect and handle deadlocks gracefully",
+        "Use advisory locks for application-level locking",
+        "Implement retry logic with exponential backoff",
+        "Handle phantom reads in concurrent scenarios"
+      ],
+      "test_cases": [
+        {
+          "input": "Two concurrent transactions updating same row",
+          "expected": "One succeeds, one retries or fails gracefully"
+        },
+        {
+          "input": "Circular dependency causing deadlock",
+          "expected": "Deadlock detected, one transaction rolled back"
+        }
+      ],
+      "evaluation_criteria": {
+        "isolation": "Correct isolation level usage",
+        "deadlock": "Proper deadlock handling",
+        "concurrency": "Safe concurrent access patterns"
+      },
+      "time_limit_minutes": 40
+    },
+    {
+      "id": "db_004",
+      "title": "Advanced Joins and Aggregations",
+      "difficulty": "Medium",
+      "description": "Write complex queries using various JOIN types, GROUP BY, HAVING, and aggregation functions.",
+      "requirements": [
+        "Use INNER, LEFT, RIGHT, FULL OUTER joins appropriately",
+        "Implement self-joins for hierarchical data",
+        "Use GROUP BY with HAVING for filtered aggregations",
+        "Apply aggregate functions (SUM, AVG, COUNT, MAX, MIN)",
+        "Handle NULL values in aggregations correctly",
+        "Use DISTINCT and GROUP BY efficiently"
+      ],
+      "test_cases": [
+        {
+          "input": "Find customers who spent more than average",
+          "expected": "Correct use of subquery or CTE with aggregation"
+        },
+        {
+          "input": "List products never ordered",
+          "expected": "Use LEFT JOIN with NULL check or NOT EXISTS"
+        }
+      ],
+      "evaluation_criteria": {
+        "correctness": "Queries return expected results",
+        "efficiency": "Optimal join order and strategy",
+        "readability": "Clear and maintainable SQL"
+      },
+      "time_limit_minutes": 25
+    },
+    {
+      "id": "db_005",
+      "title": "Window Functions and Analytics",
+      "difficulty": "Hard",
+      "description": "Use window functions for running totals, rankings, and moving averages.",
+      "requirements": [
+        "Implement ROW_NUMBER, RANK, DENSE_RANK",
+        "Calculate running totals with SUM OVER",
+        "Compute moving averages with window frames",
+        "Use LAG/LEAD for row comparisons",
+        "Partition results with PARTITION BY",
+        "Implement FIRST_VALUE/LAST_VALUE correctly"
+      ],
+      "test_cases": [
+        {
+          "input": "Calculate 7-day moving average of sales",
+          "expected": "Correct window frame: ROWS BETWEEN 6 PRECEDING AND CURRENT ROW"
+        },
+        {
+          "input": "Rank products by sales within each category",
+          "expected": "Use RANK() with PARTITION BY category"
+        }
+      ],
+      "evaluation_criteria": {
+        "correctness": "Window functions produce correct results",
+        "frames": "Proper use of window frame specifications",
+        "performance": "Efficient use of window functions"
+      },
+      "time_limit_minutes": 30
+    },
+    {
+      "id": "db_006",
+      "title": "Common Table Expressions (CTEs) and Recursion",
+      "difficulty": "Hard",
+      "description": "Use CTEs for readable queries and recursive CTEs for hierarchical data traversal.",
+      "requirements": [
+        "Refactor complex queries using CTEs",
+        "Implement recursive CTE for tree traversal",
+        "Handle cycles in recursive queries",
+        "Use multiple CTEs in single query",
+        "Implement path enumeration for hierarchies",
+        "Calculate tree depth and level"
+      ],
+      "test_cases": [
+        {
+          "input": "Find all descendants of a node in org chart",
+          "expected": "Recursive CTE returning full subtree"
+        },
+        {
+          "input": "Build category breadcrumb path",
+          "expected": "Path like 'Electronics > Computers > Laptops'"
+        }
+      ],
+      "evaluation_criteria": {
+        "recursion": "Correct base and recursive cases",
+        "termination": "Handles cycles without infinite loop",
+        "readability": "Clean CTE structure"
+      },
+      "time_limit_minutes": 35
+    },
+    {
+      "id": "db_007",
+      "title": "Full-Text Search Implementation",
+      "difficulty": "Medium",
+      "description": "Implement full-text search with ranking, stemming, and phrase matching.",
+      "requirements": [
+        "Create full-text search indexes (FTS5 for SQLite, tsvector for PostgreSQL)",
+        "Implement ranked search results",
+        "Support phrase and proximity searches",
+        "Handle stemming and stop words",
+        "Implement search suggestions/autocomplete",
+        "Highlight search matches in results"
+      ],
+      "test_cases": [
+        {
+          "input": "Search 'running shoes' in product descriptions",
+          "expected": "Returns ranked results, 'run' matches 'running'"
+        },
+        {
+          "input": "Phrase search for exact match",
+          "expected": "Only matches exact phrase, not individual words"
+        }
+      ],
+      "evaluation_criteria": {
+        "relevance": "Results ranked by relevance",
+        "features": "Stemming and phrase search work",
+        "performance": "Efficient index usage"
+      },
+      "time_limit_minutes": 30
+    },
+    {
+      "id": "db_008",
+      "title": "JSON Operations and Document Storage",
+      "difficulty": "Medium",
+      "description": "Store and query JSON data efficiently using native JSON functions.",
+      "requirements": [
+        "Store JSON documents in appropriate column types",
+        "Extract values from JSON using path expressions",
+        "Create indexes on JSON fields",
+        "Update nested JSON values",
+        "Aggregate over JSON arrays",
+        "Convert between JSON and relational formats"
+      ],
+      "test_cases": [
+        {
+          "input": "Query products where metadata->>'color' = 'red'",
+          "expected": "Uses index on JSON path if available"
+        },
+        {
+          "input": "Aggregate tags from JSON array across products",
+          "expected": "Correct use of json_each/jsonb_array_elements"
+        }
+      ],
+      "evaluation_criteria": {
+        "correctness": "JSON operations return expected values",
+        "indexing": "JSON paths can be indexed and queried efficiently",
+        "updates": "Partial JSON updates work correctly"
+      },
+      "time_limit_minutes": 25
+    },
+    {
+      "id": "db_009",
+      "title": "Connection Pooling and Resource Management",
+      "difficulty": "Medium",
+      "description": "Implement connection pooling with proper resource cleanup and connection lifecycle management.",
+      "requirements": [
+        "Create connection pool with min/max connections",
+        "Implement connection health checks",
+        "Handle connection timeouts gracefully",
+        "Implement connection recycling",
+        "Track connection metrics (active, idle, wait time)",
+        "Clean up connections on shutdown"
+      ],
+      "test_cases": [
+        {
+          "input": "100 concurrent requests with pool of 10",
+          "expected": "Requests queue and complete without connection exhaustion"
+        },
+        {
+          "input": "Connection becomes stale",
+          "expected": "Pool validates and replaces stale connection"
+        }
+      ],
+      "evaluation_criteria": {
+        "pooling": "Connections properly reused",
+        "limits": "Pool respects max connections",
+        "cleanup": "All connections closed on shutdown"
+      },
+      "time_limit_minutes": 30
+    },
+    {
+      "id": "db_010",
+      "title": "Database Testing and Fixtures",
+      "difficulty": "Easy",
+      "description": "Write database tests with proper fixtures, isolation, and cleanup.",
+      "requirements": [
+        "Create reusable test fixtures",
+        "Isolate tests with transactions (rollback after each)",
+        "Test constraint violations",
+        "Test trigger behavior",
+        "Mock/stub database for unit tests",
+        "Use factories for test data generation"
+      ],
+      "test_cases": [
+        {
+          "input": "Run 100 tests concurrently",
+          "expected": "All tests isolated, no interference"
+        },
+        {
+          "input": "Test that verifies cascade delete",
+          "expected": "Related records deleted, constraint enforced"
+        }
+      ],
+      "evaluation_criteria": {
+        "isolation": "Tests don't affect each other",
+        "fixtures": "Reusable and maintainable fixtures",
+        "coverage": "All constraint types tested"
+      },
+      "time_limit_minutes": 25
+    }
+  ]
+}
